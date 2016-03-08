@@ -57,17 +57,21 @@ if is_gunicorn_installed; then
 fi
 
 if is_mod_wsgi_installed; then
+  echo "Yes mod_wsgi"
   if [[ -z "$APP_MODULE" ]]; then
+    echo "1"
     # Find shallowest wsgi.py file, one of ./wsgi.py, <project>/wsgi.py or <project>/<project>/wsgi.py,
     # replace "/" with "." and remove ".py" suffix
     APP_MODULE=$(find . -maxdepth 3 -type f -name 'wsgi.py' -printf '%d\t%P\n' | sort -nk1 | cut -f2 | head -1 | sed 's:/:.:;s:.py$::')
   fi
 
   if [[ -z "$APP_MODULE" && -f setup.py ]]; then
+    echo "2"
     APP_MODULE="$(python setup.py --name)"
   fi
-
+  echo $APP_MODULE
   if [[ "$APP_MODULE" ]]; then
+    echo "3"
     echo "---> Serving application with mod_wsgi ($APP_MODULE) ..."
     mod_wsgi-express start-server wsgi.py
   fi
