@@ -1,3 +1,2 @@
 pandas
 lxml==3.4.4
-django
